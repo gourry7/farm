@@ -1,0 +1,131 @@
+body {
+    background-color: #f8f9fa;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.card {
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    border: none;
+}
+
+.card-header {
+    background-color: #fff;
+    border-bottom: 1px solid rgba(0,0,0,.125);
+    border-radius: 15px 15px 0 0 !important;
+    padding: 15px 20px;
+}
+
+.sensor-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.sensor-unit {
+    font-size: 1rem;
+    color: #7f8c8d;
+}
+
+.pump-status {
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.pump-on {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.pump-off {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+.refresh-time {
+    font-size: 0.8rem;
+    color: #95a5a6;
+    text-align: right;
+    margin-top: 10px;
+}
+
+.btn-primary {
+    background-color: #3498db;
+    border-color: #3498db;
+    padding: 10px 20px;
+    font-size: 1.1rem;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+    border-color: #2980b9;
+}
+
+.alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 5px;
+    display: none;
+    z-index: 1000;
+}
+
+.alert-success {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.alert-error {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.sensor-data p, .system-status p {
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.sensor-data span, .system-status span {
+    font-weight: bold;
+    color: #0d6efd;
+}
+
+#sensorChart {
+    width: 100%;
+    height: 300px;
+}
+
+/* 상태 표시 스타일 */
+.status-on {
+    color: #198754;
+}
+
+.status-off {
+    color: #dc3545;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .card {
+        margin-bottom: 15px;
+    }
+    
+    .sensor-data p, .system-status p {
+        font-size: 1rem;
+    }
+} 
