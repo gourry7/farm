@@ -1,5 +1,5 @@
 // Firebase 설정
-export const firebaseConfig = {
+window.firebaseConfig = {
     apiKey: "AIzaSyDFyoSOXpF32S9HHENuJ_Ogr7bW50LG2wE",
     authDomain: "farm-server-f0f8c.firebaseapp.com",
     databaseURL: "https://farm-server-f0f8c-default-rtdb.firebaseio.com",
