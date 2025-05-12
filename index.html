@@ -3,148 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>스마트팜 모니터링</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        body {
-            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
-            font-family: 'Noto Sans KR', sans-serif;
-            min-height: 100vh;
-        }
-        .main-header {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-        .main-header h1 {
-            font-weight: 800;
-            font-size: 2.5rem;
-            color: #2d3436;
-            margin-bottom: 0.5rem;
-        }
-        .main-header p {
-            color: #636e72;
-            font-size: 1.1rem;
-        }
-        .sensor-card {
-            border: none;
-            border-radius: 18px;
-            box-shadow: 0 4px 16px rgba(52, 152, 219, 0.08);
-            background: linear-gradient(135deg, #f8fafc 60%, #e3f0ff 100%);
-            transition: transform 0.2s;
-            position: relative;
-        }
-        .sensor-card:hover {
-            transform: translateY(-4px) scale(1.03);
-            box-shadow: 0 8px 24px rgba(52, 152, 219, 0.13);
-        }
-        .sensor-icon {
-            font-size: 2.2rem;
-            margin-bottom: 0.5rem;
-            color: #3498db;
-        }
-        .sensor-value {
-            font-size: 2.1rem;
-            font-weight: 700;
-            color: #222f3e;
-        }
-        .sensor-unit {
-            font-size: 1rem;
-            color: #7f8c8d;
-        }
-        .sensor-status {
-            margin-top: 0.2rem;
-            font-size: 1rem;
-            font-weight: 600;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.3em;
-            min-height: 1.5em;
-            line-height: 1.5;
-        }
-        .sensor-status i {
-            font-size: 1.1em;
-            vertical-align: middle;
-            margin-right: 0.2em;
-        }
-        .status-normal { color: #27ae60; }
-        .status-warning { color: #f39c12; }
-        .status-danger { color: #e74c3c; }
-        .chart-container {
-            height: 320px;
-        }
-        .motor-card {
-            border: none;
-            border-radius: 18px;
-            box-shadow: 0 4px 16px rgba(46, 204, 113, 0.10);
-            background: linear-gradient(135deg, #f8fafc 60%, #eafaf1 100%);
-            text-align: center;
-            padding: 32px 0;
-        }
-        .motor-status {
-            font-size: 2.2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-        }
-        .motor-on {
-            color: #27ae60;
-        }
-        .motor-off {
-            color: #e74c3c;
-        }
-        .photo-card {
-            border: none;
-            border-radius: 18px;
-            box-shadow: 0 4px 16px rgba(52, 152, 219, 0.08);
-            background: linear-gradient(135deg, #f8fafc 60%, #e3f0ff 100%);
-            text-align: center;
-            padding: 32px 0;
-        }
-        #cameraImage {
-            max-width: 100%;
-            border-radius: 12px;
-            margin: 18px 0 10px 0;
-            box-shadow: 0 2px 12px rgba(52, 152, 219, 0.10);
-        }
-        .photo-status {
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-        }
-        .photo-info {
-            color: #636e72;
-            font-size: 0.95rem;
-        }
-        @media (max-width: 991px) {
-            .chart-container { height: 220px; }
-        }
-        @media (max-width: 767px) {
-            .main-header h1 { font-size: 2rem; }
-            .sensor-value { font-size: 1.5rem; }
-            .motor-status { font-size: 1.5rem; }
-        }
-    </style>
+    <title>센서 모니터링</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
-    <div class="container py-4">
-        <div class="main-header">
-            <h1><i class="fas fa-seedling"></i> 스마트팜 모니터링</h1>
-            <p>실시간 환경 정보와 모터, 카메라 상태를 한눈에!</p>
-        </div>
+    <div class="container">
+        <h1>센서 모니터링</h1>
         <!-- 센서 카드 -->
         <div class="row g-3 mb-3">
             <div class="col-6 col-md-3">
                 <div class="card sensor-card text-center py-4" id="tempCard">
                     <div class="sensor-icon"><i class="fas fa-thermometer-half"></i></div>
                     <div class="sensor-value" id="temperature">--</div>
-                    <div class="sensor-status" id="ecStatus"></div>
                     <div class="sensor-unit">온도 (°C)</div>
                 </div>
             </div>
@@ -152,7 +23,6 @@
                 <div class="card sensor-card text-center py-4" id="humCard">
                     <div class="sensor-icon"><i class="fas fa-tint"></i></div>
                     <div class="sensor-value" id="humidity">--</div>
-                    <div class="sensor-status" id="phStatus"></div>
                     <div class="sensor-unit">습도 (%)</div>
                 </div>
             </div>
@@ -160,6 +30,7 @@
                 <div class="card sensor-card text-center py-4" id="ecCard">
                     <div class="sensor-icon"><i class="fas fa-bolt"></i></div>
                     <div class="sensor-value" id="ec">--</div>
+                    <div class="sensor-status" id="ecStatus"></div>
                     <div class="sensor-unit">EC (us/cm)</div>
                 </div>
             </div>
@@ -167,277 +38,12 @@
                 <div class="card sensor-card text-center py-4" id="phCard">
                     <div class="sensor-icon"><i class="fas fa-flask"></i></div>
                     <div class="sensor-value" id="ph">--</div>
+                    <div class="sensor-status" id="phStatus"></div>
                     <div class="sensor-unit">pH</div>
                 </div>
             </div>
         </div>
-        <!-- 그래프 -->
-        <div class="row g-3 mb-3">
-            <div class="col-md-6">
-                <div class="card sensor-card">
-                    <div class="card-header bg-white border-0">
-                        <h5 class="mb-0"><i class="fas fa-chart-line"></i> 온도/습도 그래프</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="chart-container">
-                            <canvas id="tempHumChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card sensor-card">
-                    <div class="card-header bg-white border-0">
-                        <h5 class="mb-0"><i class="fas fa-chart-area"></i> EC/pH 그래프</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="chart-container">
-                            <canvas id="ecPhChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- 모터 상태 & 사진 -->
-        <div class="row g-3 mb-3">
-            <div class="col-md-6">
-                <div class="motor-card">
-                    <div class="motor-status" id="motorStatus">
-                        <i class="fas fa-cog"></i>
-                        <span id="pumpStatusText">OFF</span>
-                    </div>
-                    <div class="photo-info" id="lastUpdate">마지막 업데이트: --</div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="photo-card">
-                    <button id="captureBtn" class="btn btn-primary mb-2">
-                        <i class="fas fa-camera"></i> 사진 촬영
-                    </button>
-                    <p class="photo-status" id="photoStatus">준비 완료</p>
-                    <img id="cameraImage" alt="현장 스냅샷" style="display: none;">
-                    <p class="photo-info" id="photoTime">촬영 시간: --</p>
-                </div>
-            </div>
-        </div>
     </div>
-    <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-    import { getDatabase, ref, set, onValue, off } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
-    import { firebaseConfig } from './config.js';
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    // Chart.js 차트 초기화
-    const tempHumChart = new Chart(document.getElementById('tempHumChart'), {
-        type: 'line',
-        data: {
-            labels: [],
-            datasets: [
-                {
-                    label: '온도 (°C)',
-                    borderColor: '#e74c3c',
-                    backgroundColor: 'rgba(231,76,60,0.08)',
-                    data: [],
-                    yAxisID: 'y'
-                },
-                {
-                    label: '습도 (%)',
-                    borderColor: '#3498db',
-                    backgroundColor: 'rgba(52,152,219,0.08)',
-                    data: [],
-                    yAxisID: 'y1'
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    type: 'linear',
-                    position: 'left',
-                    title: { display: true, text: '온도 (°C)' }
-                },
-                y1: {
-                    type: 'linear',
-                    position: 'right',
-                    title: { display: true, text: '습도 (%)' },
-                    grid: { drawOnChartArea: false }
-                }
-            }
-        }
-    });
-
-    const ecPhChart = new Chart(document.getElementById('ecPhChart'), {
-        type: 'line',
-        data: {
-            labels: [],
-            datasets: [
-                {
-                    label: 'EC (us/cm)',
-                    borderColor: '#2ecc71',
-                    backgroundColor: 'rgba(46,204,113,0.08)',
-                    data: [],
-                    yAxisID: 'y'
-                },
-                {
-                    label: 'pH',
-                    borderColor: '#9b59b6',
-                    backgroundColor: 'rgba(155,89,182,0.08)',
-                    data: [],
-                    yAxisID: 'y1'
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    type: 'linear',
-                    position: 'left',
-                    title: { display: true, text: 'EC (us/cm)' }
-                },
-                y1: {
-                    type: 'linear',
-                    position: 'right',
-                    title: { display: true, text: 'pH' },
-                    grid: { drawOnChartArea: false }
-                }
-            }
-        }
-    });
-
-    // 상태 판정 함수
-    function getECStatus(ec) {
-        if (ec === undefined || isNaN(ec)) return {icon: '', text: '', cls: ''};
-        if (ec < 2000) return {icon: 'fa-arrow-down', text: '낮음', cls: 'status-warning'};
-        if (ec > 3500) return {icon: 'fa-arrow-up', text: '높음', cls: 'status-danger'};
-        return {icon: 'fa-check-circle', text: '정상', cls: 'status-normal'};
-    }
-    function getPHStatus(ph) {
-        if (ph === undefined || isNaN(ph)) return {icon: '', text: '', cls: ''};
-        if (ph < 5.5) return {icon: 'fa-arrow-down', text: '산성', cls: 'status-danger'};
-        if (ph > 6.5) return {icon: 'fa-arrow-up', text: '알칼리', cls: 'status-danger'};
-        return {icon: 'fa-check-circle', text: '정상', cls: 'status-normal'};
-    }
-
-    // 실시간 센서 데이터 반영
-    onValue(ref(db, 'sensor_data'), (snapshot) => {
-        const data = snapshot.val();
-        if (!data) return;
-        document.getElementById('temperature').textContent = data.temperature?.toFixed(1) ?? '--';
-        document.getElementById('humidity').textContent = data.humidity?.toFixed(1) ?? '--';
-        document.getElementById('ec').textContent = data.ec?.toFixed(1) ?? '--';
-        document.getElementById('ph').textContent = data.ph?.toFixed(1) ?? '--';
-
-        // EC/pH 상태 표시
-        const ecStatus = getECStatus(data.ec);
-        const phStatus = getPHStatus(data.ph);
-        const ecStatusDiv = document.getElementById('ecStatus');
-        const phStatusDiv = document.getElementById('phStatus');
-        ecStatusDiv.innerHTML = ecStatus.icon ? `<i class="fas ${ecStatus.icon}"></i> <span>${ecStatus.text}</span>` : '';
-        ecStatusDiv.className = 'sensor-status ' + ecStatus.cls;
-        phStatusDiv.innerHTML = phStatus.icon ? `<i class="fas ${phStatus.icon}"></i> <span>${phStatus.text}</span>` : '';
-        phStatusDiv.className = 'sensor-status ' + phStatus.cls;
-
-        // 모터 상태 표시
-        const pumpStatusText = document.getElementById('pumpStatusText');
-        const motorStatus = document.getElementById('motorStatus');
-        let status = data.pump_status;
-        if (typeof status === 'boolean') status = status ? 'ON' : 'OFF';
-        pumpStatusText.textContent = status ?? '--';
-        motorStatus.className = 'motor-status ' + (status === 'ON' ? 'motor-on' : 'motor-off');
-
-        // 마지막 업데이트 시간
-        if (data.timestamp) {
-            document.getElementById('lastUpdate').textContent =
-                '마지막 업데이트: ' + new Date(data.timestamp).toLocaleString();
-        }
-
-        // 차트 데이터 업데이트
-        const timestamp = data.timestamp ? new Date(data.timestamp).toLocaleTimeString() : '';
-        if (timestamp) {
-            tempHumChart.data.labels.push(timestamp);
-            tempHumChart.data.datasets[0].data.push(data.temperature);
-            tempHumChart.data.datasets[1].data.push(data.humidity);
-            if (tempHumChart.data.labels.length > 20) {
-                tempHumChart.data.labels.shift();
-                tempHumChart.data.datasets[0].data.shift();
-                tempHumChart.data.datasets[1].data.shift();
-            }
-            tempHumChart.update();
-
-            ecPhChart.data.labels.push(timestamp);
-            ecPhChart.data.datasets[0].data.push(data.ec);
-            ecPhChart.data.datasets[1].data.push(data.ph);
-            if (ecPhChart.data.labels.length > 20) {
-                ecPhChart.data.labels.shift();
-                ecPhChart.data.datasets[0].data.shift();
-                ecPhChart.data.datasets[1].data.shift();
-            }
-            ecPhChart.update();
-        }
-    });
-
-    // 사진 관련 기능
-    const captureBtn = document.getElementById('captureBtn');
-    const photoStatus = document.getElementById('photoStatus');
-    const cameraImage = document.getElementById('cameraImage');
-    const photoTime = document.getElementById('photoTime');
-
-    async function takePhoto() {
-        captureBtn.disabled = true;
-        captureBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 촬영 중...';
-        photoStatus.textContent = "카메라 준비 중...";
-        photoStatus.style.color = "#3498db";
-
-        try {
-            await set(ref(db, 'control/take_photo'), true);
-
-            const photoStatusRef = ref(db, 'control/photo_status');
-            const listener = onValue(photoStatusRef, (snapshot) => {
-                const status = snapshot.val();
-                if (status) {
-                    if (status === "success") {
-                        photoStatus.textContent = "최근 촬영: 성공";
-                        photoStatus.style.color = "#00b894";
-                    } else if (status === "failed") {
-                        photoStatus.textContent = "최근 촬영: 실패";
-                        photoStatus.style.color = "#d63031";
-                    }
-                    off(photoStatusRef, 'value', listener);
-                    set(ref(db, 'control/photo_status'), null);
-                }
-            }, { onlyOnce: true });
-        } catch (error) {
-            photoStatus.textContent = "촬영 요청 실패";
-            photoStatus.style.color = "#d63031";
-        } finally {
-            setTimeout(() => {
-                captureBtn.disabled = false;
-                captureBtn.innerHTML = '<i class="fas fa-camera"></i> 사진 촬영';
-            }, 3000);
-        }
-    }
-
-    onValue(ref(db, 'latest_photo'), (snapshot) => {
-        const data = snapshot.val();
-        if (data && data.url) {
-            cameraImage.src = data.url + "?t=" + Date.now();
-            cameraImage.style.display = 'block';
-            if (data.timestamp) {
-                photoTime.textContent = `촬영 시간: ${data.timestamp}`;
-            }
-        } else {
-            cameraImage.style.display = 'none';
-            photoTime.textContent = '촬영 시간: --';
-        }
-    });
-
-    captureBtn.addEventListener('click', takePhoto);
-    </script>
+    <script src="script.js"></script>
 </body>
-</html>
+</html> 
