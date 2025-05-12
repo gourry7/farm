@@ -144,7 +144,7 @@
                 <div class="card sensor-card text-center py-4" id="tempCard">
                     <div class="sensor-icon"><i class="fas fa-thermometer-half"></i></div>
                     <div class="sensor-value" id="temperature">--</div>
-                    <div class="sensor-status" id="ecStatus"></div>
+                    <div class="sensor-status" id="tempStatus"></div>
                     <div class="sensor-unit">온도 (°C)</div>
                 </div>
             </div>
@@ -152,7 +152,7 @@
                 <div class="card sensor-card text-center py-4" id="humCard">
                     <div class="sensor-icon"><i class="fas fa-tint"></i></div>
                     <div class="sensor-value" id="humidity">--</div>
-                    <div class="sensor-status" id="phStatus"></div>
+                    <div class="sensor-status" id="humStatus"></div>
                     <div class="sensor-unit">습도 (%)</div>
                 </div>
             </div>
@@ -160,6 +160,7 @@
                 <div class="card sensor-card text-center py-4" id="ecCard">
                     <div class="sensor-icon"><i class="fas fa-bolt"></i></div>
                     <div class="sensor-value" id="ec">--</div>
+                    <div class="sensor-status" id="ecStatus"></div>
                     <div class="sensor-unit">EC (us/cm)</div>
                 </div>
             </div>
@@ -167,6 +168,7 @@
                 <div class="card sensor-card text-center py-4" id="phCard">
                     <div class="sensor-icon"><i class="fas fa-flask"></i></div>
                     <div class="sensor-value" id="ph">--</div>
+                    <div class="sensor-status" id="phStatus"></div>
                     <div class="sensor-unit">pH</div>
                 </div>
             </div>
@@ -221,21 +223,10 @@
             </div>
         </div>
     </div>
-    <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-    import { getDatabase, ref, set, onValue, off } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyDFyoSOXpF32S9HHENuJ_Ogr7bW50LG2wE",
-        authDomain: "farm-server-f0f8c.firebaseapp.com",
-        databaseURL: "https://farm-server-f0f8c-default-rtdb.firebaseio.com",
-        projectId: "farm-server-f0f8c",
-        storageBucket: "farm-server-f0f8c.appspot.com",
-        appId: "1:872192710214:web:6587f7631ba7cdde36dc47"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    <script src="config.js"></script>
+    <script>
+    const app = firebase.initializeApp(window.firebaseConfig);
+    const db = firebase.database().ref();
 
     // Chart.js 차트 초기화
     const tempHumChart = new Chart(document.getElementById('tempHumChart'), {
@@ -319,6 +310,18 @@
     });
 
     // 상태 판정 함수
+    function getTempStatus(temp) {
+        if (temp === undefined || isNaN(temp)) return {icon: '', text: '', cls: ''};
+        if (temp < 18) return {icon: 'fa-arrow-down', text: '낮음', cls: 'status-warning'};
+        if (temp > 30) return {icon: 'fa-arrow-up', text: '높음', cls: 'status-danger'};
+        return {icon: 'fa-check-circle', text: '정상', cls: 'status-normal'};
+    }
+    function getHumStatus(hum) {
+        if (hum === undefined || isNaN(hum)) return {icon: '', text: '', cls: ''};
+        if (hum < 60) return {icon: 'fa-arrow-down', text: '낮음', cls: 'status-warning'};
+        if (hum > 80) return {icon: 'fa-arrow-up', text: '높음', cls: 'status-danger'};
+        return {icon: 'fa-check-circle', text: '정상', cls: 'status-normal'};
+    }
     function getECStatus(ec) {
         if (ec === undefined || isNaN(ec)) return {icon: '', text: '', cls: ''};
         if (ec < 2000) return {icon: 'fa-arrow-down', text: '낮음', cls: 'status-warning'};
@@ -333,7 +336,7 @@
     }
 
     // 실시간 센서 데이터 반영
-    onValue(ref(db, 'sensor_data'), (snapshot) => {
+    db.on('value', (snapshot) => {
         const data = snapshot.val();
         if (!data) return;
         document.getElementById('temperature').textContent = data.temperature?.toFixed(1) ?? '--';
@@ -341,15 +344,19 @@
         document.getElementById('ec').textContent = data.ec?.toFixed(1) ?? '--';
         document.getElementById('ph').textContent = data.ph?.toFixed(1) ?? '--';
 
-        // EC/pH 상태 표시
+        // 상태 표시
+        const tempStatus = getTempStatus(data.temperature);
+        const humStatus = getHumStatus(data.humidity);
         const ecStatus = getECStatus(data.ec);
         const phStatus = getPHStatus(data.ph);
-        const ecStatusDiv = document.getElementById('ecStatus');
-        const phStatusDiv = document.getElementById('phStatus');
-        ecStatusDiv.innerHTML = ecStatus.icon ? `<i class="fas ${ecStatus.icon}"></i> <span>${ecStatus.text}</span>` : '';
-        ecStatusDiv.className = 'sensor-status ' + ecStatus.cls;
-        phStatusDiv.innerHTML = phStatus.icon ? `<i class="fas ${phStatus.icon}"></i> <span>${phStatus.text}</span>` : '';
-        phStatusDiv.className = 'sensor-status ' + phStatus.cls;
+        document.getElementById('tempStatus').innerHTML = tempStatus.icon ? `<i class="fas ${tempStatus.icon}"></i> <span>${tempStatus.text}</span>` : '';
+        document.getElementById('tempStatus').className = 'sensor-status ' + tempStatus.cls;
+        document.getElementById('humStatus').innerHTML = humStatus.icon ? `<i class="fas ${humStatus.icon}"></i> <span>${humStatus.text}</span>` : '';
+        document.getElementById('humStatus').className = 'sensor-status ' + humStatus.cls;
+        document.getElementById('ecStatus').innerHTML = ecStatus.icon ? `<i class="fas ${ecStatus.icon}"></i> <span>${ecStatus.text}</span>` : '';
+        document.getElementById('ecStatus').className = 'sensor-status ' + ecStatus.cls;
+        document.getElementById('phStatus').innerHTML = phStatus.icon ? `<i class="fas ${phStatus.icon}"></i> <span>${phStatus.text}</span>` : '';
+        document.getElementById('phStatus').className = 'sensor-status ' + phStatus.cls;
 
         // 모터 상태 표시
         const pumpStatusText = document.getElementById('pumpStatusText');
@@ -403,10 +410,10 @@
         photoStatus.style.color = "#3498db";
 
         try {
-            await set(ref(db, 'control/take_photo'), true);
+            await db.child('control/take_photo').set(true);
 
-            const photoStatusRef = ref(db, 'control/photo_status');
-            const listener = onValue(photoStatusRef, (snapshot) => {
+            const photoStatusRef = db.child('control/photo_status');
+            const listener = photoStatusRef.on('value', (snapshot) => {
                 const status = snapshot.val();
                 if (status) {
                     if (status === "success") {
@@ -416,8 +423,8 @@
                         photoStatus.textContent = "최근 촬영: 실패";
                         photoStatus.style.color = "#d63031";
                     }
-                    off(photoStatusRef, 'value', listener);
-                    set(ref(db, 'control/photo_status'), null);
+                    photoStatusRef.off('value', listener);
+                    photoStatusRef.set(null);
                 }
             }, { onlyOnce: true });
         } catch (error) {
@@ -431,7 +438,7 @@
         }
     }
 
-    onValue(ref(db, 'latest_photo'), (snapshot) => {
+    db.child('latest_photo').on('value', (snapshot) => {
         const data = snapshot.val();
         if (data && data.url) {
             cameraImage.src = data.url + "?t=" + Date.now();
