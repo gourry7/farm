@@ -226,7 +226,7 @@
     async function loadFirebaseConfig() {
         try {
             // config.json 파일에서 설정 로드
-            const response = await fetch('/config.json');
+            const response = await fetch('config.json');
             if (!response.ok) {
                 throw new Error('Firebase 설정을 로드할 수 없습니다.');
             }
