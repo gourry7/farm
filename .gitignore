@@ -4,7 +4,7 @@
 .env.*.local
 
 # Firebase config
-web/config.js
+config.js
 
 # IDE
 .vscode/
