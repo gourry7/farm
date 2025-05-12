@@ -223,10 +223,21 @@
             </div>
         </div>
     </div>
-    <script src="config.js"></script>
-    <script>
-    const app = firebase.initializeApp(window.firebaseConfig);
-    const db = firebase.database().ref();
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+    import { getDatabase, ref, set, onValue, off } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDFyoSOXpF32S9HHENuJ_Ogr7bW50LG2wE",
+        authDomain: "farm-server-f0f8c.firebaseapp.com",
+        databaseURL: "https://farm-server-f0f8c-default-rtdb.firebaseio.com",
+        projectId: "farm-server-f0f8c",
+        storageBucket: "farm-server-f0f8c.appspot.com",
+        appId: "1:872192710214:web:6587f7631ba7cdde36dc47"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
     // Chart.js 차트 초기화
     const tempHumChart = new Chart(document.getElementById('tempHumChart'), {
@@ -336,7 +347,7 @@
     }
 
     // 실시간 센서 데이터 반영
-    db.on('value', (snapshot) => {
+    onValue(ref(db, 'sensor_data'), (snapshot) => {
         const data = snapshot.val();
         if (!data) return;
         document.getElementById('temperature').textContent = data.temperature?.toFixed(1) ?? '--';
@@ -410,10 +421,10 @@
         photoStatus.style.color = "#3498db";
 
         try {
-            await db.child('control/take_photo').set(true);
+            await set(ref(db, 'control/take_photo'), true);
 
-            const photoStatusRef = db.child('control/photo_status');
-            const listener = photoStatusRef.on('value', (snapshot) => {
+            const photoStatusRef = ref(db, 'control/photo_status');
+            const listener = onValue(photoStatusRef, (snapshot) => {
                 const status = snapshot.val();
                 if (status) {
                     if (status === "success") {
@@ -423,8 +434,8 @@
                         photoStatus.textContent = "최근 촬영: 실패";
                         photoStatus.style.color = "#d63031";
                     }
-                    photoStatusRef.off('value', listener);
-                    photoStatusRef.set(null);
+                    off(photoStatusRef, 'value', listener);
+                    set(ref(db, 'control/photo_status'), null);
                 }
             }, { onlyOnce: true });
         } catch (error) {
@@ -438,7 +449,7 @@
         }
     }
 
-    db.child('latest_photo').on('value', (snapshot) => {
+    onValue(ref(db, 'latest_photo'), (snapshot) => {
         const data = snapshot.val();
         if (data && data.url) {
             cameraImage.src = data.url + "?t=" + Date.now();

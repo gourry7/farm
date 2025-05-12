@@ -1,5 +1,5 @@
 // Firebase 초기화
-window.firebaseConfig = {
+const firebaseConfig = {
     apiKey: "AIzaSyDFyoSOXpF32S9HHENuJ_Ogr7bW50LG2wE",
     authDomain: "farm-server-f0f8c.firebaseapp.com",
     databaseURL: "https://farm-server-f0f8c-default-rtdb.firebaseio.com",
@@ -9,7 +9,7 @@ window.firebaseConfig = {
 };
 
 // Firebase 초기화
-const app = firebase.initializeApp(window.firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const cherryTomatoRef = db.ref('/cherry_tomato');
 
